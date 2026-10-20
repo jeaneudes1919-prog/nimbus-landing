@@ -49,4 +49,13 @@ describe("Navbar (menu mobile)", () => {
     expect(screen.getAllByRole("link", { name: "Tarifs" }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole("link", { name: "Fonctionnalités" }).length).toBeGreaterThan(0);
   });
+
+  it("ouvre la modale de connexion au clic sur Se connecter", async () => {
+    const user = userEvent.setup();
+    renderNavbar();
+
+    await user.click(screen.getByRole("button", { name: "Se connecter" }));
+
+    expect(screen.getByRole("dialog", { name: "Bon retour parmi nous" })).toBeInTheDocument();
+  });
 });

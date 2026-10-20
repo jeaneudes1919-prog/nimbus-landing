@@ -6,7 +6,7 @@ import { NAV_LINKS } from "../../data/site";
 import { useScrolled } from "../../hooks/useScrolled";
 import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
 import { MagneticButton } from "../ui/MagneticButton";
-import { Toast } from "../ui/Toast";
+import { LoginModal } from "../auth/LoginModal";
 import { scrollToSection } from "../../lib/scroll";
 
 const FOCUSABLE =
@@ -15,19 +15,10 @@ const FOCUSABLE =
 export function Navbar() {
   const scrolled = useScrolled(40);
   const [open, setOpen] = useState(false);
-  const [loginNotice, setLoginNotice] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
-  const loginTimerRef = useRef(null);
   useLockBodyScroll(open);
-
-  useEffect(() => () => window.clearTimeout(loginTimerRef.current), []);
-
-  function handleLoginClick() {
-    setLoginNotice(true);
-    window.clearTimeout(loginTimerRef.current);
-    loginTimerRef.current = window.setTimeout(() => setLoginNotice(false), 4500);
-  }
 
   useEffect(() => {
     if (!open) return undefined;
@@ -99,7 +90,7 @@ export function Navbar() {
         <div className="hidden items-center gap-3 lg:flex">
           <button
             type="button"
-            onClick={handleLoginClick}
+            onClick={() => setLoginOpen(true)}
             className="focus-ring rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg"
           >
             Se connecter
@@ -194,13 +185,7 @@ export function Navbar() {
         )}
       </AnimatePresence>
 
-      <Toast
-        open={loginNotice}
-        tone="success"
-        message="Mode démo"
-        description="La connexion n'est pas disponible ici. Utilisez l'essai gratuit juste en dessous."
-        onClose={() => setLoginNotice(false)}
-      />
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </header>
   );
 }
