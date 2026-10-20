@@ -12,6 +12,7 @@ import { Badge } from "../ui/Badge";
 import { MagneticButton } from "../ui/MagneticButton";
 import { SafeImage } from "../ui/SafeImage";
 import { DashboardMockup } from "./DashboardMockup";
+import { scrollToSection } from "../../lib/scroll";
 
 const AVATARS = [
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80",
@@ -122,6 +123,7 @@ export function Hero() {
           >
             <MagneticButton
               type="button"
+              onClick={() => scrollToSection("essai-gratuit")}
               className="group h-12 w-full rounded-full bg-signature px-7 text-sm font-semibold text-white shadow-glow transition-shadow hover:shadow-[0_0_60px_-10px_rgba(124,92,255,0.8)] sm:w-auto"
             >
               Démarrer gratuitement

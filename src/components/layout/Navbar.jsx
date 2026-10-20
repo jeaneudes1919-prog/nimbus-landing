@@ -6,6 +6,8 @@ import { NAV_LINKS } from "../../data/site";
 import { useScrolled } from "../../hooks/useScrolled";
 import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
 import { MagneticButton } from "../ui/MagneticButton";
+import { Toast } from "../ui/Toast";
+import { scrollToSection } from "../../lib/scroll";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])';
@@ -13,9 +15,19 @@ const FOCUSABLE =
 export function Navbar() {
   const scrolled = useScrolled(40);
   const [open, setOpen] = useState(false);
+  const [loginNotice, setLoginNotice] = useState(false);
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
+  const loginTimerRef = useRef(null);
   useLockBodyScroll(open);
+
+  useEffect(() => () => window.clearTimeout(loginTimerRef.current), []);
+
+  function handleLoginClick() {
+    setLoginNotice(true);
+    window.clearTimeout(loginTimerRef.current);
+    loginTimerRef.current = window.setTimeout(() => setLoginNotice(false), 4500);
+  }
 
   useEffect(() => {
     if (!open) return undefined;
@@ -85,13 +97,17 @@ export function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <a
-            href="#tarifs"
+          <button
+            type="button"
+            onClick={handleLoginClick}
             className="focus-ring rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg"
           >
             Se connecter
-          </a>
-          <MagneticButton className="h-10 rounded-full bg-white px-5 text-sm font-semibold text-bg transition-colors hover:bg-fg">
+          </button>
+          <MagneticButton
+            onClick={() => scrollToSection("essai-gratuit")}
+            className="h-10 rounded-full bg-white px-5 text-sm font-semibold text-bg transition-colors hover:bg-fg"
+          >
             Essai gratuit
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </MagneticButton>
@@ -159,7 +175,7 @@ export function Navbar() {
               className="mt-8 flex flex-col gap-3"
             >
               <a
-                href="#tarifs"
+                href="#essai-gratuit"
                 onClick={closeMenu}
                 className="focus-ring flex h-12 items-center justify-center rounded-full bg-white text-sm font-semibold text-bg"
               >
@@ -177,6 +193,14 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Toast
+        open={loginNotice}
+        tone="success"
+        message="Mode démo"
+        description="La connexion n'est pas disponible ici. Utilisez l'essai gratuit juste en dessous."
+        onClose={() => setLoginNotice(false)}
+      />
     </header>
   );
 }
